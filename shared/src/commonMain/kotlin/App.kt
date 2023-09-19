@@ -16,15 +16,21 @@ import androidx.compose.ui.Modifier
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 // TODO: Implement your Model here. This could be a class or interface that provides methods for accessing your data.
 // For example, you might have methods for fetching data from a database or making network requests.
 class MyModel {
-    // TODO: Implement methods for accessing your data here.
+    // Simulate a remote service call
+    suspend fun fetchDataFromRemote(): Int {
+        delay(1000) // Simulate network delay
+        return (0..100).random() // Simulate random data from remote service
+    }
 }
 
 class SimpleViewModel(private val model: MyModel) : ViewModel() {
@@ -32,23 +38,18 @@ class SimpleViewModel(private val model: MyModel) : ViewModel() {
     val count: StateFlow<Int> = _count
 
     fun incrementCount() {
-        _count.value++
-        // TODO: Here you can call methods on your Model to fetch or update data.
+        viewModelScope.launch {
+            val data = model.fetchDataFromRemote()
+            _count.value = data
+        }
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
-
-
-// TODO: Create an instance of your Model here. You might need to provide additional dependencies.
+    // TODO: Create an instance of your Model here. You might need to provide additional dependencies.
     val model = MyModel()
-
     // Pass the Model to your ViewModel.
-    //    val viewModel = SimpleViewModel(model)
-
-   // Factory version
     val viewModel = getViewModel(
         key = "simple-model",
         factory = viewModelFactory {
@@ -57,31 +58,75 @@ fun App() {
     )
     val count by viewModel.count.collectAsState()
 
-
     MaterialTheme {
-
-        var greetingText by remember { mutableStateOf("Hello, World!") }
-        var showImage by remember { mutableStateOf(false) }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-
             Button(onClick = { viewModel.incrementCount() }) {
                 Text("Count is $count")
-            }
-
-            Button(onClick = {
-                greetingText = "Hello, ${getPlatformName()}"
-                showImage = !showImage
-            }) {
-                Text(greetingText)
-            }
-            AnimatedVisibility(showImage) {
-                Image(
-                    painterResource("compose-multiplatform.xml"),
-                    null
-                )
             }
         }
     }
 }
+
+//
+//// TODO: Implement your Model here. This could be a class or interface that provides methods for accessing your data.
+//// For example, you might have methods for fetching data from a database or making network requests.
+//class MyModel {
+//    // TODO: Implement methods for accessing your data here.
+//}
+//
+//class SimpleViewModel(private val model: MyModel) : ViewModel() {
+//    private val _count = MutableStateFlow(0)
+//    val count: StateFlow<Int> = _count
+//
+//    fun incrementCount() {
+//        _count.value++
+//        // TODO: Here you can call methods on your Model to fetch or update data.
+//    }
+//}
+//
+//@OptIn(ExperimentalResourceApi::class)
+//@Composable
+//fun App() {
+//
+//
+//    // TODO: Create an instance of your Model here. You might need to provide additional dependencies.
+//    val model = MyModel()
+//    // Pass the Model to your ViewModel.
+//    //    val viewModel = SimpleViewModel(model)
+//   // Factory version
+//    val viewModel = getViewModel(
+//        key = "simple-model",
+//        factory = viewModelFactory {
+//            SimpleViewModel(model)
+//        }
+//    )
+//    val count by viewModel.count.collectAsState()
+//
+//
+//    MaterialTheme {
+//
+//        var greetingText by remember { mutableStateOf("Hello, World!") }
+//        var showImage by remember { mutableStateOf(false) }
+//        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+//            // TODO my Sample call
+//            Button(onClick = { viewModel.incrementCount() }) {
+//                Text("Count is $count")
+//            }
+//
+//            Button(onClick = {
+//                greetingText = "Hello, ${getPlatformName()}"
+//                showImage = !showImage
+//            }) {
+//                Text(greetingText)
+//            }
+//            AnimatedVisibility(showImage) {
+//                Image(
+//                    painterResource("compose-multiplatform.xml"),
+//                    null
+//                )
+//            }
+//        }
+//    }
+//}
 
 expect fun getPlatformName(): String
