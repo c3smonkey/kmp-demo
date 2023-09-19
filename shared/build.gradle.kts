@@ -22,19 +22,28 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
+            val mokoMvvmVersion = extra["moko.mvvm.version"] as String
+
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
+                api("dev.icerock.moko:mvvm-compose:$mokoMvvmVersion")
+
             }
         }
         val androidMain by getting {
+            val androidxCoreKtxVersion = extra["androidx.core.ktx.version"] as String
+            val androidxAppcompatVersion = extra["androidx.appcompat.version"] as String
+            val androidxActivityComposeVersion = extra["androidx.activity.compose.version"] as String
+
             dependencies {
-                api("androidx.activity:activity-compose:1.7.2")
-                api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.10.1")
+                api("androidx.activity:activity-compose:${androidxActivityComposeVersion}")
+                api("androidx.appcompat:appcompat:${androidxAppcompatVersion}")
+                api("androidx.core:core-ktx:${androidxCoreKtxVersion}")
             }
         }
         val iosX64Main by getting
