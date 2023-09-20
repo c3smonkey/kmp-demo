@@ -1,5 +1,5 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
+package ch.c3smonkey.app.presentation
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
@@ -8,42 +8,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import ch.c3smonkey.app.domain.MyModel
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
-// TODO: Implement your Model here. This could be a class or interface that provides methods for accessing your data.
-// For example, you might have methods for fetching data from a database or making network requests.
-class MyModel {
-    // Simulate a remote service call
-    suspend fun fetchDataFromRemote(): Int {
-        delay(1000) // Simulate network delay
-        return (0..100).random() // Simulate random data from remote service
-    }
-}
-
-class SimpleViewModel(private val model: MyModel) : ViewModel() {
-    private val _count = MutableStateFlow(0)
-    val count: StateFlow<Int> = _count
-
-    fun incrementCount() {
-        viewModelScope.launch {
-            val data = model.fetchDataFromRemote()
-            _count.value = data
-        }
-    }
-}
 
 @Composable
 fun App() {
@@ -66,6 +36,11 @@ fun App() {
         }
     }
 }
+
+expect fun getPlatformName(): String
+
+
+
 
 //
 //// TODO: Implement your Model here. This could be a class or interface that provides methods for accessing your data.
@@ -129,4 +104,3 @@ fun App() {
 //    }
 //}
 
-expect fun getPlatformName(): String
