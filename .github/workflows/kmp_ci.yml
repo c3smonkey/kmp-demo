@@ -33,10 +33,12 @@ jobs:
           echo "android.minSdk=24" >> local.properties
           ./gradlew :androidApp:build :androidApp:test
 
+
       - name: Run Android Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
           target: google_apis
+          emulator-options: "-no-boot-anim -no-window"
           arch: x86
           script: ./gradlew connectedCheck
