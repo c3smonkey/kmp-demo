@@ -1,0 +1,40 @@
+name: KMM CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'  # Eclipse Temurin is a popular distribution of OpenJDK
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build shared module and run tests
+        run: ./gradlew :shared:build :shared:test
+
+      - name: Build androidApp module and run tests
+        run: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "android.compileSdk=34" >> local.properties
+          echo "android.targetSdk=34" >> local.properties
+          echo "android.minSdk=24" >> local.properties
+          ./gradlew :androidApp:build :androidApp:test
+
+      - name: Run Android Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          script: ./gradlew connectedCheck
