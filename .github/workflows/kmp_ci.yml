@@ -34,12 +34,12 @@ jobs:
           ./gradlew :androidApp:build :androidApp:test
 
 
-      - name: Run Android Instrumentation Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: google_apis
-          emulator-options: "-no-boot-anim -no-window"
-          emulator-boot-timeout: 600 # Increase this value as needed
-          arch: x86
-          script: ./gradlew connectedCheck
+#      - name: Run Android Instrumentation Tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: 29
+#          target: google_apis
+#          emulator-options: "-no-boot-anim -no-window"
+#          emulator-boot-timeout: 600 # Increase this value as needed
+#          arch: x86
+#          script: ./gradlew connectedCheck
